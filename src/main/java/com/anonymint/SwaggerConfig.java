@@ -1,49 +1,50 @@
 package com.anonymint;
 
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-import com.mangofactory.swagger.models.dto.ApiInfo;
-import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * Description of this class
+ * Swagger Config
  *
  * @author <a href="mailto:mint.com@gmail.com">anonymint</a>
  * @since 2016-05-21
  */
 @Configuration
-@EnableSwagger
+@EnableSwagger2
 public class SwaggerConfig {
 
-    private SpringSwaggerConfig swaggerConfig;
-
-    @Autowired
-    public void setSpringSwaggerConfig(SpringSwaggerConfig swaggerConfig) {
-        this.swaggerConfig = swaggerConfig;
-    }
-
     @Bean
-    public SwaggerSpringMvcPlugin swaggerSpringMvcPlugin() {
-        return new SwaggerSpringMvcPlugin(swaggerConfig)
-                .swaggerGroup("business-api")
-                .includePatterns("/data.*")
+    public Docket dataApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("data-api")
                 .apiInfo(apiInfo())
+                .select()
+                .paths(PathSelectors.regex("/api/.*/data/.*"))
                 .build();
+
     }
 
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
-                "The swarn api version 1",
-                "Swarn API document version 1",
+                "The swarn API",
+                "Swarn API document",
+                "Version 2",
                 "http://en.wikipedia.org/wiki/Terms_of_service",
-                "mint.com@gmail.com",
+                contact(),
                 "The MIT License (MIT)",
                 "https://opensource.org/licenses/MIT"
         );
         return apiInfo;
+    }
+
+    private Contact contact() {
+        return new Contact("anonymint", "www.3kalak.com", "mint.com@gmail.com");
     }
 
 }
